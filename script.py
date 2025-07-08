@@ -28,8 +28,8 @@ def fast_clean_title(text):
 
 class MediaSorterFrame(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="Media Sorter Pro", size=(550, 600))
-        self.SetMinSize((530, 550))
+        super().__init__(None, title="Media Sorter Pro", size=(600, 800))
+        self.SetMinSize((580, 700))
 
         panel = wx.Panel(self)
         panel.SetBackgroundColour(wx.Colour(40, 40, 40))
@@ -43,25 +43,50 @@ class MediaSorterFrame(wx.Frame):
         title.SetForegroundColour(wx.Colour(255, 255, 255))
         main_sizer.Add(title, flag=wx.CENTER | wx.ALL, border=10)
 
-        # File type selection
+        # File type selection - now with two rows
         type_box = wx.StaticBox(panel, label="File Types to Sort")
         type_box.SetForegroundColour(wx.Colour(255, 255, 255))
-        type_sizer = wx.StaticBoxSizer(type_box, wx.HORIZONTAL)
+        type_sizer = wx.StaticBoxSizer(type_box, wx.VERTICAL)
+
+        # First row - media files
+        media_row = wx.BoxSizer(wx.HORIZONTAL)
 
         self.video_cb = wx.CheckBox(panel, label="Videos")
         self.video_cb.SetValue(True)
         self.video_cb.SetForegroundColour(wx.Colour(255, 255, 255))
-        type_sizer.Add(self.video_cb, flag=wx.ALL, border=10)
+        media_row.Add(self.video_cb, flag=wx.ALL, border=10)
 
         self.image_cb = wx.CheckBox(panel, label="Images")
         self.image_cb.SetValue(True)
         self.image_cb.SetForegroundColour(wx.Colour(255, 255, 255))
-        type_sizer.Add(self.image_cb, flag=wx.ALL, border=10)
+        media_row.Add(self.image_cb, flag=wx.ALL, border=10)
 
         self.pdf_cb = wx.CheckBox(panel, label="PDFs")
         self.pdf_cb.SetValue(True)
         self.pdf_cb.SetForegroundColour(wx.Colour(255, 255, 255))
-        type_sizer.Add(self.pdf_cb, flag=wx.ALL, border=10)
+        media_row.Add(self.pdf_cb, flag=wx.ALL, border=10)
+
+        type_sizer.Add(media_row, flag=wx.EXPAND)
+
+        # Second row - office files
+        office_row = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.word_cb = wx.CheckBox(panel, label="Word")
+        self.word_cb.SetValue(True)
+        self.word_cb.SetForegroundColour(wx.Colour(255, 255, 255))
+        office_row.Add(self.word_cb, flag=wx.ALL, border=10)
+
+        self.excel_cb = wx.CheckBox(panel, label="Excel")
+        self.excel_cb.SetValue(True)
+        self.excel_cb.SetForegroundColour(wx.Colour(255, 255, 255))
+        office_row.Add(self.excel_cb, flag=wx.ALL, border=10)
+
+        self.powerpoint_cb = wx.CheckBox(panel, label="PowerPoint")
+        self.powerpoint_cb.SetValue(True)
+        self.powerpoint_cb.SetForegroundColour(wx.Colour(255, 255, 255))
+        office_row.Add(self.powerpoint_cb, flag=wx.ALL, border=10)
+
+        type_sizer.Add(office_row, flag=wx.EXPAND)
 
         main_sizer.Add(type_sizer, flag=wx.ALL | wx.EXPAND, border=15)
 
@@ -98,6 +123,7 @@ class MediaSorterFrame(wx.Frame):
         stats_box = wx.StaticBox(panel, label="Statistics")
         stats_box.SetForegroundColour(wx.Colour(255, 255, 255))
         stats_sizer = wx.StaticBoxSizer(stats_box, wx.VERTICAL)
+
         # First row of stats
         stats_row1 = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -122,17 +148,38 @@ class MediaSorterFrame(wx.Frame):
         # Second row of stats
         stats_row2 = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.total_label = wx.StaticText(panel, label="Total Files: 0")
-        self.total_label.SetForegroundColour(wx.Colour(255, 255, 255))
-        stats_row2.Add(self.total_label, flag=wx.ALL, border=10)
+        self.word_label = wx.StaticText(panel, label="Word: 0")
+        self.word_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row2.Add(self.word_label, flag=wx.ALL, border=10)
 
         stats_row2.AddStretchSpacer()
 
-        self.folders_label = wx.StaticText(panel, label="Folders: 0")
-        self.folders_label.SetForegroundColour(wx.Colour(255, 255, 255))
-        stats_row2.Add(self.folders_label, flag=wx.ALL, border=10)
+        self.excel_label = wx.StaticText(panel, label="Excel: 0")
+        self.excel_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row2.Add(self.excel_label, flag=wx.ALL, border=10)
+
+        stats_row2.AddStretchSpacer()
+
+        self.powerpoint_label = wx.StaticText(panel, label="PowerPoint: 0")
+        self.powerpoint_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row2.Add(self.powerpoint_label, flag=wx.ALL, border=10)
 
         stats_sizer.Add(stats_row2, flag=wx.EXPAND)
+
+        # Third row of stats
+        stats_row3 = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.total_label = wx.StaticText(panel, label="Total Files: 0")
+        self.total_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row3.Add(self.total_label, flag=wx.ALL, border=10)
+
+        stats_row3.AddStretchSpacer()
+
+        self.folders_label = wx.StaticText(panel, label="Folders: 0")
+        self.folders_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row3.Add(self.folders_label, flag=wx.ALL, border=10)
+
+        stats_sizer.Add(stats_row3, flag=wx.EXPAND)
 
         main_sizer.Add(stats_sizer, flag=wx.ALL | wx.EXPAND, border=15)
 
@@ -157,7 +204,7 @@ class MediaSorterFrame(wx.Frame):
         main_sizer.Add(button_sizer, flag=wx.ALL | wx.EXPAND, border=15)
 
         dll_status = "DLL Loaded" if DLL_LOADED else "DLL Not Found"
-        footer = wx.StaticText(panel, label=f"{dll_status} | Media Sorter Pro v3.0")
+        footer = wx.StaticText(panel, label=f"{dll_status} | Media Sorter Pro v3.1")
         footer.SetForegroundColour(wx.Colour(180, 180, 180))
         footer_font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         footer.SetFont(footer_font)
@@ -175,6 +222,9 @@ class MediaSorterFrame(wx.Frame):
         self.image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.svg', '.ico',
                                  '.raw', '.heic', '.heif'}
         self.pdf_extensions = {'.pdf'}
+        self.word_extensions = {'.doc', '.docx', '.rtf', '.odt'}
+        self.excel_extensions = {'.xls', '.xlsx', '.xlsm', '.xlsb', '.csv', '.ods'}
+        self.powerpoint_extensions = {'.ppt', '.pptx', '.pptm', '.ppsx', '.odp'}
 
         self.Center()
 
@@ -187,6 +237,12 @@ class MediaSorterFrame(wx.Frame):
             return 'image'
         elif ext in self.pdf_extensions:
             return 'pdf'
+        elif ext in self.word_extensions:
+            return 'word'
+        elif ext in self.excel_extensions:
+            return 'excel'
+        elif ext in self.powerpoint_extensions:
+            return 'powerpoint'
         return None
 
     def on_select_folder(self, event):
@@ -216,11 +272,17 @@ class MediaSorterFrame(wx.Frame):
         video_count = 0
         image_count = 0
         pdf_count = 0
+        word_count = 0
+        excel_count = 0
+        powerpoint_count = 0
 
         # Get selected file types
         include_videos = self.video_cb.GetValue()
         include_images = self.image_cb.GetValue()
         include_pdfs = self.pdf_cb.GetValue()
+        include_word = self.word_cb.GetValue()
+        include_excel = self.excel_cb.GetValue()
+        include_powerpoint = self.powerpoint_cb.GetValue()
 
         for entry in os.scandir(self.selected_folder):
             if entry.is_file():
@@ -235,6 +297,15 @@ class MediaSorterFrame(wx.Frame):
                 elif file_type == 'pdf' and include_pdfs:
                     self.media_files.append(entry)
                     pdf_count += 1
+                elif file_type == 'word' and include_word:
+                    self.media_files.append(entry)
+                    word_count += 1
+                elif file_type == 'excel' and include_excel:
+                    self.media_files.append(entry)
+                    excel_count += 1
+                elif file_type == 'powerpoint' and include_powerpoint:
+                    self.media_files.append(entry)
+                    powerpoint_count += 1
 
         # Count unique titles for folder estimation
         titles = set()
@@ -243,26 +314,29 @@ class MediaSorterFrame(wx.Frame):
             if title:
                 titles.add(title)
 
-        # Update statistics
+        # Update statistics - Fixed to properly update all counts
         self.videos_label.SetLabel(f"Videos: {video_count}")
         self.images_label.SetLabel(f"Images: {image_count}")
         self.pdfs_label.SetLabel(f"PDFs: {pdf_count}")
+        self.word_label.SetLabel(f"Word: {word_count}")
+        self.excel_label.SetLabel(f"Excel: {excel_count}")
+        self.powerpoint_label.SetLabel(f"PowerPoint: {powerpoint_count}")
         self.total_label.SetLabel(f"Total Files: {len(self.media_files)}")
         self.folders_label.SetLabel(f"Folders: {len(titles)}")
 
         if self.media_files:
-            self.status_label.SetLabel(f"Found {len(self.media_files)} media files")
+            self.status_label.SetLabel(f"Found {len(self.media_files)} files")
             self.sort_btn.Enable(True)
             self.preview_btn.Enable(True)
         else:
-            self.status_label.SetLabel("No media files found")
+            self.status_label.SetLabel("No files found")
             self.sort_btn.Enable(False)
             self.preview_btn.Enable(False)
 
     def auto_sort_files(self):
         confirm_dlg = wx.MessageDialog(
             self,
-            f"Sort {len(self.media_files)} media files into folders?",
+            f"Sort {len(self.media_files)} files into folders?",
             "Confirm",
             wx.YES_NO | wx.ICON_QUESTION
         )
@@ -315,7 +389,7 @@ class MediaSorterFrame(wx.Frame):
 
         confirm_dlg = wx.MessageDialog(
             self,
-            f"Sort {len(self.media_files)} media files into folders?",
+            f"Sort {len(self.media_files)} files into folders?",
             "Confirm",
             wx.YES_NO | wx.ICON_QUESTION
         )
@@ -379,7 +453,7 @@ class MediaSorterFrame(wx.Frame):
 
         success_dlg = wx.MessageDialog(
             self,
-            f"Successfully sorted {moved_count} media files!",
+            f"Successfully sorted {moved_count} files!",
             "Complete",
             wx.OK | wx.ICON_INFORMATION
         )
