@@ -26,10 +26,10 @@ def fast_clean_title(text):
     return ' '.join(word.capitalize() for word in cleaned.split())
 
 
-class VideoSorterFrame(wx.Frame):
+class MediaSorterFrame(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="Video Sorter Pro", size=(500, 400))
-        self.SetMinSize((480, 380))
+        super().__init__(None, title="Media Sorter Pro", size=(550, 600))
+        self.SetMinSize((530, 550))
 
         panel = wx.Panel(self)
         panel.SetBackgroundColour(wx.Colour(40, 40, 40))
@@ -37,11 +37,33 @@ class VideoSorterFrame(wx.Frame):
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         main_sizer.AddSpacer(20)
 
-        title = wx.StaticText(panel, label="Video Sorter Pro")
+        title = wx.StaticText(panel, label="Media Sorter Pro")
         title_font = wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
         title.SetFont(title_font)
         title.SetForegroundColour(wx.Colour(255, 255, 255))
         main_sizer.Add(title, flag=wx.CENTER | wx.ALL, border=10)
+
+        # File type selection
+        type_box = wx.StaticBox(panel, label="File Types to Sort")
+        type_box.SetForegroundColour(wx.Colour(255, 255, 255))
+        type_sizer = wx.StaticBoxSizer(type_box, wx.HORIZONTAL)
+
+        self.video_cb = wx.CheckBox(panel, label="Videos")
+        self.video_cb.SetValue(True)
+        self.video_cb.SetForegroundColour(wx.Colour(255, 255, 255))
+        type_sizer.Add(self.video_cb, flag=wx.ALL, border=10)
+
+        self.image_cb = wx.CheckBox(panel, label="Images")
+        self.image_cb.SetValue(True)
+        self.image_cb.SetForegroundColour(wx.Colour(255, 255, 255))
+        type_sizer.Add(self.image_cb, flag=wx.ALL, border=10)
+
+        self.pdf_cb = wx.CheckBox(panel, label="PDFs")
+        self.pdf_cb.SetValue(True)
+        self.pdf_cb.SetForegroundColour(wx.Colour(255, 255, 255))
+        type_sizer.Add(self.pdf_cb, flag=wx.ALL, border=10)
+
+        main_sizer.Add(type_sizer, flag=wx.ALL | wx.EXPAND, border=15)
 
         folder_box = wx.StaticBox(panel, label="Selected Folder")
         folder_box.SetForegroundColour(wx.Colour(255, 255, 255))
@@ -63,7 +85,7 @@ class VideoSorterFrame(wx.Frame):
         status_box.SetForegroundColour(wx.Colour(255, 255, 255))
         status_sizer = wx.StaticBoxSizer(status_box, wx.VERTICAL)
 
-        self.status_label = wx.StaticText(panel, label="Ready to sort videos")
+        self.status_label = wx.StaticText(panel, label="Ready to sort media files")
         self.status_label.SetForegroundColour(wx.Colour(255, 255, 255))
         status_sizer.Add(self.status_label, flag=wx.ALL, border=10)
 
@@ -75,17 +97,42 @@ class VideoSorterFrame(wx.Frame):
 
         stats_box = wx.StaticBox(panel, label="Statistics")
         stats_box.SetForegroundColour(wx.Colour(255, 255, 255))
-        stats_sizer = wx.StaticBoxSizer(stats_box, wx.HORIZONTAL)
+        stats_sizer = wx.StaticBoxSizer(stats_box, wx.VERTICAL)
+        # First row of stats
+        stats_row1 = wx.BoxSizer(wx.HORIZONTAL)
 
         self.videos_label = wx.StaticText(panel, label="Videos: 0")
         self.videos_label.SetForegroundColour(wx.Colour(255, 255, 255))
-        stats_sizer.Add(self.videos_label, flag=wx.ALL, border=10)
+        stats_row1.Add(self.videos_label, flag=wx.ALL, border=10)
 
-        stats_sizer.AddStretchSpacer()
+        stats_row1.AddStretchSpacer()
+
+        self.images_label = wx.StaticText(panel, label="Images: 0")
+        self.images_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row1.Add(self.images_label, flag=wx.ALL, border=10)
+
+        stats_row1.AddStretchSpacer()
+
+        self.pdfs_label = wx.StaticText(panel, label="PDFs: 0")
+        self.pdfs_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row1.Add(self.pdfs_label, flag=wx.ALL, border=10)
+
+        stats_sizer.Add(stats_row1, flag=wx.EXPAND)
+
+        # Second row of stats
+        stats_row2 = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.total_label = wx.StaticText(panel, label="Total Files: 0")
+        self.total_label.SetForegroundColour(wx.Colour(255, 255, 255))
+        stats_row2.Add(self.total_label, flag=wx.ALL, border=10)
+
+        stats_row2.AddStretchSpacer()
 
         self.folders_label = wx.StaticText(panel, label="Folders: 0")
         self.folders_label.SetForegroundColour(wx.Colour(255, 255, 255))
-        stats_sizer.Add(self.folders_label, flag=wx.ALL, border=10)
+        stats_row2.Add(self.folders_label, flag=wx.ALL, border=10)
+
+        stats_sizer.Add(stats_row2, flag=wx.EXPAND)
 
         main_sizer.Add(stats_sizer, flag=wx.ALL | wx.EXPAND, border=15)
 
@@ -100,17 +147,17 @@ class VideoSorterFrame(wx.Frame):
 
         button_sizer.AddStretchSpacer()
 
-        self.sort_btn = wx.Button(panel, label="Sort Videos", size=(100, 35))
+        self.sort_btn = wx.Button(panel, label="Sort Files", size=(100, 35))
         self.sort_btn.SetBackgroundColour(wx.Colour(100, 180, 100))
         self.sort_btn.SetForegroundColour(wx.Colour(255, 255, 255))
         self.sort_btn.Enable(False)
-        self.sort_btn.Bind(wx.EVT_BUTTON, self.on_sort_videos)
+        self.sort_btn.Bind(wx.EVT_BUTTON, self.on_sort_files)
         button_sizer.Add(self.sort_btn, flag=wx.ALL, border=10)
 
         main_sizer.Add(button_sizer, flag=wx.ALL | wx.EXPAND, border=15)
 
         dll_status = "DLL Loaded" if DLL_LOADED else "DLL Not Found"
-        footer = wx.StaticText(panel, label=f"{dll_status} | Video Sorter Pro v2.1")
+        footer = wx.StaticText(panel, label=f"{dll_status} | Media Sorter Pro v3.0")
         footer.SetForegroundColour(wx.Colour(180, 180, 180))
         footer_font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         footer.SetFont(footer_font)
@@ -119,13 +166,31 @@ class VideoSorterFrame(wx.Frame):
         panel.SetSizer(main_sizer)
 
         self.selected_folder = None
-        self.video_files = []
+        self.media_files = []
         self.sorting_thread = None
+
+        # File extensions
+        self.video_extensions = {'.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.3gp', '.f4v',
+                                 '.m2ts', '.ts'}
+        self.image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.svg', '.ico',
+                                 '.raw', '.heic', '.heif'}
+        self.pdf_extensions = {'.pdf'}
 
         self.Center()
 
+    def get_file_type(self, filename):
+        """Determine the file type based on extension"""
+        ext = Path(filename).suffix.lower()
+        if ext in self.video_extensions:
+            return 'video'
+        elif ext in self.image_extensions:
+            return 'image'
+        elif ext in self.pdf_extensions:
+            return 'pdf'
+        return None
+
     def on_select_folder(self, event):
-        dlg = wx.DirDialog(self, "Choose a folder containing videos")
+        dlg = wx.DirDialog(self, "Choose a folder containing media files")
         if dlg.ShowModal() == wx.ID_OK:
             self.selected_folder = dlg.GetPath()
 
@@ -136,8 +201,8 @@ class VideoSorterFrame(wx.Frame):
             self.folder_label.SetLabel(display_path)
             self.scan_folder()
 
-            if self.video_files:
-                self.auto_sort_videos()
+            if self.media_files:
+                self.auto_sort_files()
         dlg.Destroy()
 
     def scan_folder(self):
@@ -147,37 +212,57 @@ class VideoSorterFrame(wx.Frame):
         self.status_label.SetLabel("Scanning folder...")
         self.progress_bar.SetValue(0)
 
-        self.video_files = []
-        video_extensions = {'.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v'}
+        self.media_files = []
+        video_count = 0
+        image_count = 0
+        pdf_count = 0
+
+        # Get selected file types
+        include_videos = self.video_cb.GetValue()
+        include_images = self.image_cb.GetValue()
+        include_pdfs = self.pdf_cb.GetValue()
 
         for entry in os.scandir(self.selected_folder):
             if entry.is_file():
-                ext = Path(entry.name).suffix.lower()
-                if ext in video_extensions:
-                    self.video_files.append(entry)
+                file_type = self.get_file_type(entry.name)
 
+                if file_type == 'video' and include_videos:
+                    self.media_files.append(entry)
+                    video_count += 1
+                elif file_type == 'image' and include_images:
+                    self.media_files.append(entry)
+                    image_count += 1
+                elif file_type == 'pdf' and include_pdfs:
+                    self.media_files.append(entry)
+                    pdf_count += 1
+
+        # Count unique titles for folder estimation
         titles = set()
-        for video in self.video_files:
-            title = fast_clean_title(video.name)
+        for media_file in self.media_files:
+            title = fast_clean_title(media_file.name)
             if title:
                 titles.add(title)
 
-        self.videos_label.SetLabel(f"Videos: {len(self.video_files)}")
+        # Update statistics
+        self.videos_label.SetLabel(f"Videos: {video_count}")
+        self.images_label.SetLabel(f"Images: {image_count}")
+        self.pdfs_label.SetLabel(f"PDFs: {pdf_count}")
+        self.total_label.SetLabel(f"Total Files: {len(self.media_files)}")
         self.folders_label.SetLabel(f"Folders: {len(titles)}")
 
-        if self.video_files:
-            self.status_label.SetLabel(f"Found {len(self.video_files)} video files")
+        if self.media_files:
+            self.status_label.SetLabel(f"Found {len(self.media_files)} media files")
             self.sort_btn.Enable(True)
             self.preview_btn.Enable(True)
         else:
-            self.status_label.SetLabel("No video files found")
+            self.status_label.SetLabel("No media files found")
             self.sort_btn.Enable(False)
             self.preview_btn.Enable(False)
 
-    def auto_sort_videos(self):
+    def auto_sort_files(self):
         confirm_dlg = wx.MessageDialog(
             self,
-            f"Sort {len(self.video_files)} videos into folders?",
+            f"Sort {len(self.media_files)} media files into folders?",
             "Confirm",
             wx.YES_NO | wx.ICON_QUESTION
         )
@@ -187,23 +272,27 @@ class VideoSorterFrame(wx.Frame):
         confirm_dlg.Destroy()
 
     def on_preview(self, event):
-        if not self.video_files:
+        if not self.media_files:
             return
 
-        preview_dlg = wx.Dialog(self, title="Preview", size=(600, 400))
+        preview_dlg = wx.Dialog(self, title="Preview", size=(700, 450))
         preview_dlg.SetBackgroundColour(wx.Colour(40, 40, 40))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         preview_text = ""
-        for i, video in enumerate(self.video_files[:15]):
-            title_name = fast_clean_title(video.name)
+        for i, media_file in enumerate(self.media_files[:20]):
+            title_name = fast_clean_title(media_file.name)
             if not title_name:
                 title_name = "Unknown"
-            preview_text += f"'{video.name}' -> '{title_name}'\n"
 
-        if len(self.video_files) > 15:
-            preview_text += f"\n... and {len(self.video_files) - 15} more files"
+            file_type = self.get_file_type(media_file.name)
+            type_indicator = f"[{file_type.upper()}]" if file_type else "[UNKNOWN]"
+
+            preview_text += f"{type_indicator} '{media_file.name}' -> '{title_name}'\n"
+
+        if len(self.media_files) > 20:
+            preview_text += f"\n... and {len(self.media_files) - 20} more files"
 
         text_ctrl = wx.TextCtrl(preview_dlg, value=preview_text,
                                 style=wx.TE_MULTILINE | wx.TE_READONLY)
@@ -220,13 +309,13 @@ class VideoSorterFrame(wx.Frame):
         preview_dlg.ShowModal()
         preview_dlg.Destroy()
 
-    def on_sort_videos(self, event):
-        if not self.video_files:
+    def on_sort_files(self, event):
+        if not self.media_files:
             return
 
         confirm_dlg = wx.MessageDialog(
             self,
-            f"Sort {len(self.video_files)} videos into folders?",
+            f"Sort {len(self.media_files)} media files into folders?",
             "Confirm",
             wx.YES_NO | wx.ICON_QUESTION
         )
@@ -240,18 +329,21 @@ class VideoSorterFrame(wx.Frame):
         self.sort_btn.Enable(False)
         self.preview_btn.Enable(False)
 
-        self.sorting_thread = threading.Thread(target=self.sort_videos_thread)
+        self.sorting_thread = threading.Thread(target=self.sort_files_thread)
         self.sorting_thread.start()
 
-    def sort_videos_thread(self):
-        total_files = len(self.video_files)
+    def sort_files_thread(self):
+        total_files = len(self.media_files)
         moved_count = 0
 
-        for i, video in enumerate(self.video_files):
+        for i, media_file in enumerate(self.media_files):
             progress = int((i / total_files) * 100)
-            wx.CallAfter(self.update_progress, progress, f"Processing: {video.name}")
+            file_type = self.get_file_type(media_file.name)
+            type_indicator = f"[{file_type.upper()}]" if file_type else ""
 
-            title = fast_clean_title(video.name)
+            wx.CallAfter(self.update_progress, progress, f"Processing {type_indicator}: {media_file.name}")
+
+            title = fast_clean_title(media_file.name)
             if not title:
                 title = "Unknown"
 
@@ -261,15 +353,15 @@ class VideoSorterFrame(wx.Frame):
                 if not os.path.exists(dest_folder):
                     os.makedirs(dest_folder)
 
-                source_path = video.path
-                dest_path = os.path.join(dest_folder, video.name)
+                source_path = media_file.path
+                dest_path = os.path.join(dest_folder, media_file.name)
 
                 if os.path.dirname(source_path) != dest_folder:
                     shutil.move(source_path, dest_path)
                     moved_count += 1
 
             except Exception as e:
-                wx.CallAfter(self.show_error, f"Error moving {video.name}: {str(e)}")
+                wx.CallAfter(self.show_error, f"Error moving {media_file.name}: {str(e)}")
 
         wx.CallAfter(self.sorting_complete, moved_count)
 
@@ -279,7 +371,7 @@ class VideoSorterFrame(wx.Frame):
 
     def sorting_complete(self, moved_count):
         self.progress_bar.SetValue(100)
-        self.status_label.SetLabel(f"Complete! Moved {moved_count} videos")
+        self.status_label.SetLabel(f"Complete! Moved {moved_count} files")
 
         self.select_btn.Enable(True)
         self.sort_btn.Enable(True)
@@ -287,7 +379,7 @@ class VideoSorterFrame(wx.Frame):
 
         success_dlg = wx.MessageDialog(
             self,
-            f"Successfully sorted {moved_count} videos!",
+            f"Successfully sorted {moved_count} media files!",
             "Complete",
             wx.OK | wx.ICON_INFORMATION
         )
@@ -302,13 +394,13 @@ class VideoSorterFrame(wx.Frame):
         dlg.Destroy()
 
 
-class VideoSorterApp(wx.App):
+class MediaSorterApp(wx.App):
     def OnInit(self):
-        frame = VideoSorterFrame()
+        frame = MediaSorterFrame()
         frame.Show()
         return True
 
 
 if __name__ == "__main__":
-    app = VideoSorterApp()
+    app = MediaSorterApp()
     app.MainLoop()
